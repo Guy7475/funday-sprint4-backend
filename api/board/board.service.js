@@ -9,9 +9,8 @@ async function query(filterBy) {
         const sortCriteria = _buildSortCriteria(filterBy)
         // const criteria = {}
         // console.log('server filterby' , filterBy)
-        // let { name, inStock, sortBy} = filterBy
+        // let { name, sortBy} = filterBy
         // criteria.name = name
-        // criteria.inStock = inStock === 'false' ? criteria.inStock : true
         const collection = await dbService.getCollection('board')
         var boards = await collection.find(criteria).sort(sortCriteria).collation({locale: "en"}).toArray()
         // var boards = await collection.find(criteria).toArray()
@@ -66,11 +65,12 @@ async function update(board) {
         await collection.updateOne({ "_id": id }, { $set: { ...board } })
         return board
     } catch (err) {
-        logger.error(`cannot update board ${boardId}`, err)
+        logger.error(`cannot update board ${board._id}`, err)
         throw err
     }
 }
 
+//Needs refactoring to match board
 function _buildCriteria(filterBy) {
     const criteria = {}
     if (filterBy.name) {
@@ -87,6 +87,7 @@ function _buildCriteria(filterBy) {
     return criteria
 }
 
+//Needs refactoring to match board
 function _buildSortCriteria({ sortBy }) {
     const criteria = {}
     if(sortBy === 'time') sortBy = 'createdAt'

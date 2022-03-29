@@ -6,7 +6,6 @@ async function getBoards(req, res) {
   try {
     var queryParams = req.query;
     const boards = await boardService.query(queryParams)
-    queryParams.inStock = queryParams.inStock === false ? '' : true
     res.json(boards);
   } catch (err) {
     logger.error('Failed to get boards', err)
