@@ -29,7 +29,7 @@ async function getBoardById(req, res) {
 async function addBoard(req, res) {
   try {
     const board = req.body;
-    const addedBoard = await boardService.add(board)
+    const addedBoard = await boardService.save(board)
     res.json(addedBoard)
   } catch (err) {
     logger.error('Failed to add board', err)
