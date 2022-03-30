@@ -5,14 +5,14 @@ const ObjectId = require('mongodb').ObjectId
 async function query(filterBy) {
     try {
         console.log('filterBy', filterBy);
-        const criteria =  _buildCriteria(filterBy)
+        const criteria = _buildCriteria(filterBy)
         const sortCriteria = _buildSortCriteria(filterBy)
         // const criteria = {}
         // console.log('server filterby' , filterBy)
         // let { name, sortBy} = filterBy
         // criteria.name = name
         const collection = await dbService.getCollection('board')
-        var boards = await collection.find(criteria).sort(sortCriteria).collation({locale: "en"}).toArray()
+        var boards = await collection.find(criteria).sort(sortCriteria).collation({ locale: "en" }).toArray()
         // var boards = await collection.find(criteria).toArray()
         // console.log('boards',boards);
         return boards
@@ -59,10 +59,11 @@ async function add(board) {
 }
 async function update(board) {
     try {
-        var id = ObjectId(board._id)
+        var id = board._id
         delete board._id
         const collection = await dbService.getCollection('board')
-        await collection.updateOne({ "_id": id }, { $set: { ...board } })
+        await collection.updateOne({ "_id": ObjectId(id) }, { $set: { ...board } })
+        board._id = id
         return board
     } catch (err) {
         logger.error(`cannot update board ${board._id}`, err)
@@ -79,8 +80,8 @@ function _buildCriteria(filterBy) {
     }
     if (filterBy.inStock) {
         // console.log(JSON.parse(filterBy.inStock))
-        criteria.inStock =  JSON.parse(filterBy.inStock) ===  true ? true : criteria.inStock
-    } 
+        criteria.inStock = JSON.parse(filterBy.inStock) === true ? true : criteria.inStock
+    }
     if (filterBy.labels && filterBy.labels.length) {
         criteria.labels = { $in: filterBy.labels }
     }
@@ -90,8 +91,8 @@ function _buildCriteria(filterBy) {
 //Needs refactoring to match board
 function _buildSortCriteria({ sortBy }) {
     const criteria = {}
-    if(sortBy === 'time') sortBy = 'createdAt'
-    if(sortBy === '') return
+    if (sortBy === 'time') sortBy = 'createdAt'
+    if (sortBy === '') return
     criteria[sortBy] = 1
     console.log('criteria', criteria);
     return criteria
