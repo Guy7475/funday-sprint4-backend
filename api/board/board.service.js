@@ -14,7 +14,7 @@ async function query(filterBy) {
         const collection = await dbService.getCollection('board')
         var boards = await collection.find(criteria).sort(sortCriteria).collation({ locale: "en" }).toArray()
         // var boards = await collection.find(criteria).toArray()
-        // console.log('boards',boards);
+        // console.log('boards', boards);
         return boards
     } catch (err) {
         logger.error('cannot find boards', err)
@@ -45,13 +45,15 @@ async function remove(boardId) {
 }
 
 async function add(board) {
+    console.log(board);
     try {
         console.log('HELLO')
         const collection = await dbService.getCollection('board')
-        console.log('board', board);
+        // console.log('board', board);
         // delete board._id
         const addedBoard = await collection.insertOne(board)
-        return addedBoard
+        console.log('addedBoard', addedBoard)
+        return addedBoard.ops[0]
     } catch (err) {
         logger.error('cannot insert board', err)
         throw err
